@@ -218,3 +218,129 @@ Voltage
 ↓
 
 (Current - Coming Next)
+
+## Electric Current
+
+- Current is the organized movement of electric charge through a conductor.
+- In metals, free electrons are the charge carriers.
+- Without a battery, free electrons move randomly, so net current is zero.
+- A battery creates an electric field that causes electrons to drift in one direction.
+- Current measures the rate of flow of electric charge.
+
+Formula:
+
+I = Q / t
+
+Where:
+- I = Current (Ampere)
+- Q = Charge (Coulomb)
+- t = Time (Second)
+
+### Unit
+
+- SI Unit: Ampere (A)
+- 1 A = 1 Coulomb of charge passing a point every second.
+
+### Direction
+
+- Electron Flow: Negative → Positive
+- Conventional Current: Positive → Negative
+
+### Important Notes
+
+- A battery does not create electrons.
+- Current is not the electrons themselves; it is a measure of charge flow.
+- The electric field propagates rapidly through the circuit, while individual electrons drift much more slowly.
+
+## Resistance
+
+- Resistance is the property of a material that opposes the flow of electric current.
+- At the microscopic level, resistance is caused by collisions between free electrons and vibrating positive ion cores in the material.
+- More collisions reduce the drift of electrons, reducing current for a given voltage.
+
+Factors affecting resistance:
+- Material
+- Length (longer wire → higher resistance)
+- Cross-sectional area (thicker wire → lower resistance)
+- Temperature (for most metals, higher temperature → higher resistance)
+
+Unit:
+- Ohm (Ω)
+
+Important Notes:
+- A resistor does not consume current.
+- Current entering a resistor equals the current leaving it.
+- Electrical energy is often converted into heat due to resistance.
+
+## Ohm's Law
+
+### Physical Intuition
+
+Current depends on two factors:
+
+- How strongly electrons are pushed (Voltage)
+- How difficult it is for electrons to move (Resistance)
+
+Increasing voltage increases electron drift.
+
+Increasing resistance increases collisions.
+
+Therefore,
+
+Current ∝ Voltage
+
+Current ∝ 1 / Resistance
+
+Combining both,
+
+I ∝ V/R
+
+Removing proportionality,
+
+I = V/R
+
+Equivalent forms:
+
+V = IR
+
+R = V/I
+
+Engineering Meaning
+
+Voltage is the push.
+
+Resistance is the opposition.
+
+Current is the resulting flow.
+
+Flow = Push / Opposition
+
+Important Notes
+
+- Valid for Ohmic materials.
+- Resistance should remain approximately constant.
+
+### Derivation
+
+Voltage represents energy supplied per unit charge.
+
+Current represents charge flowing per second.
+
+Therefore,
+
+Power
+
+= Energy / Second
+
+= (Energy / Charge) × (Charge / Second)
+
+= Voltage × Current
+
+P = VI
+
+Using Ohm's Law,
+
+P = V²/R
+
+P = I²R
+
