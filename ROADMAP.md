@@ -93,6 +93,26 @@
 
 ---
 
+## Module-02 Digital Input
+
+### Theory
+
+- [x] Input
+- [x] Digital Signal
+- [x] Input Pin
+- [x] Floating Input
+- [x] Pull-up Resistor
+- [x] Pull-down Resistor
+- [x] Internal Pull-up Resistor
+- [x] Push Button
+- [x] digitalRead()
+
+### Practical
+
+- [ ] RWS-ELE-003 — Push Button Input
+
+---
+
 ## Current Focus
 
 Current Level:

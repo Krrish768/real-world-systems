@@ -165,6 +165,22 @@ Contains complete documentation for every practical project including:
 
 ---
 
+#### Electronics Theory
+
+---
+
+- Digital Input
+- Digital Signal
+- Input Pin
+- Floating Input
+- Pull-up Resistor
+- Pull-down Resistor
+- Internal Pull-up Resistor
+- Push Button
+- digitalRead()
+
+...
+
 ## Final Project
 
 An autonomous indoor robot capable of:

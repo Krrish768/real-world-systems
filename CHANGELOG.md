@@ -4,6 +4,38 @@ All notable changes to the RWS (Real World Systems) repository are documented in
 
 ---
 
+---
+
+## v0.0.4
+
+**Date:** 12 July 2026
+
+### Added
+
+#### Theory
+
+Completed Module-02 Digital Input theory.
+
+Topics covered:
+
+- Input
+- Digital Signal
+- Input Pin
+- Floating Input
+- Pull-up Resistor
+- Pull-down Resistor
+- Internal Pull-up Resistor
+- Push Button
+- digitalRead()
+
+#### Documentation
+
+- Added Learning Session log for 12 July 2026.
+- Added pull-up/pull-down circuit explanation.
+- Added engineering notes and circuit reasoning.
+
+---
+
 ## v0.0.3
 
 **Date:** 11 July 2026
