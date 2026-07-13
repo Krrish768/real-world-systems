@@ -1,208 +1,95 @@
-# RWS
+# RWS — Real World Systems
 
-> **Real World Systems**
->
 > Building engineering systems from first principles.
-
----
-
-## Vision
-
-RWS is a long-term engineering project focused on learning Electronics, Embedded Systems, Sensors, Robotics, and AI completely from first principles while building real hardware systems.
 
 This is **not** an Arduino tutorial.
 
-The primary objective is to understand every concept deeply instead of simply following tutorials or copying code.
-
-Every project is designed to introduce one new engineering concept at a time while maintaining professional documentation throughout the journey.
-
-The final goal of this project is to design and build an autonomous indoor robot capable of:
-
-- Indoor Mapping
-- Localization
-- Dynamic Path Planning
-- Obstacle Avoidance
-- Voice Commands
-- Gesture Control
-- AI-based Perception
+RWS is a long-term learning project where I study Electronics, Embedded Systems, Sensors, and Robotics from first principles — by building real hardware, one concept at a time — with the eventual goal of building an autonomous indoor car/robot.
 
 ---
 
 ## Learning Philosophy
 
-Every topic in RWS follows the same workflow:
+Every topic follows the same workflow:
 
 **Understand → Build → Debug → Document → Commit → Push**
 
-Theory is always learned before implementation.
+Theory is always learned before implementation. The goal isn't just to make hardware work — it's to understand *why* it works.
 
-The objective is not just to make hardware work, but to understand why it works from first principles.
+---
 
-Every completed project should improve both practical engineering skills and theoretical understanding.
+## Repository Structure
+
+```
+real-world-systems/
+├── README.md              → you are here (overview + structure)
+├── INDEX.md                → full navigation map (find anything instantly)
+├── LICENSE
+├── images/                  → misc/general images (non project-specific)
+│
+├── 01-Fundamentals.md       → core physics & electricity theory
+│
+├── 02-Equipment/            → one file per component/device used
+│   ├── Arduino-Uno.md
+│   ├── Breadboard.md
+│   ├── LED.md
+│   └── ...
+│
+└── 03-Projects/             → every hands-on project
+    └── RWS-ELE-XXX-Name/
+        ├── README.md         → objective, theory, circuit, learnings
+        ├── code/              → source code (.ino files)
+        └── images/            → project-specific images
+```
+
+- **`01-Fundamentals.md`** — all core physics & electricity concepts in one place, no need to hunt across multiple notes.
+- **`02-Equipment/`** — one file per device/component, named after the device itself, so it's instantly findable.
+- **`03-Projects/`** — each project is self-contained: a `README.md` with full write-up, a `code/` folder, and an `images/` folder. Nothing else needed inside.
+- **`INDEX.md`** — a clickable master list linking to every fundamentals file, equipment file, and project.
+
+---
+
+## Final Goal
+
+An autonomous indoor car/robot capable of:
+
+- Indoor Mapping & Localization
+- Dynamic Path Planning & Obstacle Avoidance
+- Voice Commands & Gesture Control
+- AI-based Perception
+
+Every concept learned in this repo feeds directly into building this final system.
+
+---
+
+## Roadmap
+
+- ✅ Level 00 — Foundations
+- 🚧 Level 01 — Electronics
+- ⏳ Level 02 — Embedded Systems
+- ⏳ Level 03 — Sensors
+- ⏳ Level 04 — Communication
+- ⏳ Level 05 — Control Systems
+- ⏳ Level 06 — Mini Systems
+- ⏳ Level 07 — Robotics
+- ⏳ Level 08 — Computer Vision
+- ⏳ Level 09 — Autonomous Systems
+- ⏳ Level 10 — AI Integration
 
 ---
 
 ## Current Status
 
-### Current Level
+**Level:** Level 01 — Electronics (In Progress)
+**Module:** Digital Input
 
-- ✅ Level-00 Foundations (Completed)
-- 🚧 Level-01 Electronics (In Progress)
-
-### Current Module
-
-**Module-01 — Electricity**
-**Module-02 — Digital Input**
-
-### Projects Completed
-
+**Projects completed:**
 - ✅ RWS-ELE-001 — First Light
 - ✅ RWS-ELE-002 — Blink
 - ✅ RWS-ELE-003 — Push Button Input
 
-### Concepts Covered
-
-#### Foundations
-
-- Git
-- GitHub
-- Repository Structure
-- Markdown
-- Documentation Workflow
-- Git Commit Workflow
-- Project Organization
-
-#### Electronics Theory
-
-- Atom
-- Electric Charge
-- Conductors
-- Insulators
-- Free Electrons
-- Battery
-- Electric Field
-- Voltage
-- Potential Difference
-- Electric Current
-- Resistance
-- Ohm's Law
-- Electrical Power
-
-#### Electronics Practical
-
-- GPIO Output
-- LED Control
-- Breadboard
-- Current Limiting
-- Program Execution Flow
-- setup()
-- loop()
-- delay()
-- Blink Timing
-- Digital Input
-- digitalRead()
-- INPUT_PULLUP
-- Push Button Interface
-- Software Decision Making
-- Sense → Decide → Act
-
 ---
 
-## Repository Roadmap
+## License
 
-- ✅ Level-00 Foundations
-- 🚧 Level-01 Electronics
-- ⏳ Level-02 Embedded Systems
-- ⏳ Level-03 Sensors
-- ⏳ Level-04 Communication
-- ⏳ Level-05 Control Systems
-- ⏳ Level-06 Mini Systems
-- ⏳ Level-07 Robotics
-- ⏳ Level-08 Computer Vision
-- ⏳ Level-09 Autonomous Systems
-- ⏳ Level-10 AI Integration
-
----
-
-## Documentation Structure
-
-The repository follows three levels of documentation.
-
-### 1. Engineering Notes
-
-Location:
-
-```
-Level-00-Foundations/
-```
-
-Contains continuously growing theoretical notes learned during the morning sessions.
-
----
-
-### 2. Level Documentation
-
-Example:
-
-```
-Level-01-Electronics/README.md
-```
-
-Contains detailed documentation about every electronic component studied throughout the level.
-
----
-
-### 3. Project Documentation
-
-Example:
-
-```
-Projects/RWS-ELE-001-First-Light/docs/
-```
-
-Contains complete documentation for every practical project including:
-
-- Objective
-- Components
-- Theory
-- Circuit
-- Program Logic
-- Learning Outcomes
-- Common Mistakes
-- Future Improvements
-
----
-
-#### Electronics Theory
-
----
-
-- Digital Input
-- Digital Signal
-- Input Pin
-- Floating Input
-- Pull-up Resistor
-- Pull-down Resistor
-- Internal Pull-up Resistor
-- Push Button
-- digitalRead()
-
-...
-
-## Final Project
-
-An autonomous indoor robot capable of:
-
-- Indoor Mapping
-- Localization
-- Dynamic Path Planning
-- Obstacle Avoidance
-- Voice Commands
-- Gesture Control
-- AI-powered Object Recognition
-
-The robot will be developed entirely using the concepts learned throughout every previous level.
-
----
-
-> This repository documents the complete engineering journey from the very first LED to a fully autonomous intelligent robotic system built from first principles.
+This project is licensed under the [MIT License](LICENSE).
