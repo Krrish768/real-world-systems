@@ -94,6 +94,79 @@ Limits current flowing through a circuit.
 
 ---
 
+# Push Button
+
+## Introduction
+
+A push button is a momentary mechanical switch used to provide digital input to electronic circuits.
+
+---
+
+## Purpose
+
+To allow external interaction with a microcontroller by opening or closing an electrical connection.
+
+---
+
+## Working
+
+When released, the internal contacts remain separated.
+
+When pressed, the internal contacts become electrically connected, allowing current to flow.
+
+---
+
+## Internal Structure
+
+- Four terminals
+- Two internally connected pairs
+- Pressing the button connects both pairs together
+
+---
+
+## Applications
+
+- User Input
+- Reset Buttons
+- Menu Navigation
+- Control Panels
+- Robotics
+- Industrial Control
+
+---
+
+## Advantages
+
+- Simple
+- Reliable
+- Low Cost
+- Easy to Interface
+
+---
+
+## Limitations
+
+- Mechanical Bounce
+- Requires pull-up or pull-down resistor
+- Cannot be left floating
+
+---
+
+## Common Mistakes
+
+- Incorrect breadboard orientation
+- Leaving input floating
+- Forgetting pull-up or pull-down resistor
+- Assuming HIGH always means button pressed
+
+---
+
+## Health Check
+
+- Verify continuity using a multimeter.
+- Check internal terminal pairs.
+- Ensure correct breadboard placement across the center gap.
+
 # Concepts Learned
 
 - Atom

@@ -6,6 +6,40 @@ All notable changes to the RWS (Real World Systems) repository are documented in
 
 ---
 
+---
+
+## v0.0.5
+
+**Date:** 12 July 2026
+
+### Added
+
+#### Project
+
+- Completed **RWS-ELE-003 — Push Button Input**
+- Created project folder structure:
+  - `code/`
+  - `docs/`
+  - `images/`
+- Added Arduino Push Button Input program.
+- Added circuit image.
+- Added complete project documentation.
+
+#### Practical Concepts
+
+- INPUT_PULLUP
+- digitalRead()
+- Push Button Interface
+- Human Interaction
+- Software Decision Making
+- Sense → Decide → Act
+
+#### Documentation
+
+- Updated repository progress.
+- Updated roadmap.
+- Updated engineering notes.
+
 ## v0.0.4
 
 **Date:** 12 July 2026

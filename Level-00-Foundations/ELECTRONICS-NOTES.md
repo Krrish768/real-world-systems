@@ -344,3 +344,105 @@ P = V²/R
 
 P = I²R
 
+# Digital Input
+
+## Input
+
+- An input allows information to enter the microcontroller from the outside world.
+- The Arduino observes voltage on an input pin and interprets it as HIGH or LOW.
+- Inputs are used to receive information from sensors, switches and external devices.
+
+---
+
+## Digital Signal
+
+- Digital systems operate using two logical states:
+  - HIGH
+  - LOW
+- Voltage is converted into logical states using voltage thresholds.
+- Digital systems are resistant to small electrical noise.
+
+---
+
+## Input Pin
+
+- Input pins observe voltage rather than generating it.
+- They draw extremely small current.
+- They behave similarly to a voltmeter.
+
+---
+
+## Floating Input
+
+- A floating input has no defined electrical connection.
+- Floating inputs produce unpredictable HIGH and LOW readings.
+- Electrical noise from the environment can change the voltage of a floating pin.
+- Input pins should never be left floating.
+
+---
+
+## Pull-down Resistor
+
+- Provides a default connection to Ground.
+- Prevents floating inputs.
+- Button Released → LOW
+- Button Pressed → HIGH
+
+---
+
+## Pull-up Resistor
+
+- Provides a default connection to 5V.
+- Prevents floating inputs.
+- Button Released → HIGH
+- Button Pressed → LOW
+
+---
+
+## Internal Pull-up Resistor
+
+- Arduino UNO provides an internal pull-up resistor.
+- Enabled using:
+
+```cpp
+pinMode(pin, INPUT_PULLUP);
+```
+
+- Eliminates the need for an external pull-up resistor in simple circuits.
+
+---
+
+## Push Button
+
+- A push button is a momentary switch.
+- It simply opens or closes a circuit.
+- It does not generate electricity.
+- It does not consume electricity.
+
+### Internal Connections
+
+Without pressing:
+
+- A internally connected to B
+- C internally connected to D
+
+Pressed:
+
+- All four terminals become electrically connected.
+
+---
+
+## digitalRead()
+
+- Reads the logical state of an input pin.
+- Returns HIGH or LOW.
+- Reads voltage and converts it into digital information.
+
+---
+
+## Engineering Mindset
+
+While analysing any circuit, always ask:
+
+1. What is connected to what right now?
+2. Is there a complete path from the power source, through the components, and back to Ground?

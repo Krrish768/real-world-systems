@@ -94,6 +94,10 @@
 ---
 
 ## Module-02 Digital Input
+### Module Status
+
+- [x] Module-02 Digital Input (Theory)
+- [x] Module-02 Digital Input (Practical)
 
 ### Theory
 
@@ -109,7 +113,7 @@
 
 ### Practical
 
-- [ ] RWS-ELE-003 — Push Button Input
+- [x] RWS-ELE-003 — Push Button Input
 
 ---
 

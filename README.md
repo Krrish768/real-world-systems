@@ -52,11 +52,13 @@ Every completed project should improve both practical engineering skills and the
 ### Current Module
 
 **Module-01 — Electricity**
+**Module-02 — Digital Input**
 
 ### Projects Completed
 
 - ✅ RWS-ELE-001 — First Light
 - ✅ RWS-ELE-002 — Blink
+- ✅ RWS-ELE-003 — Push Button Input
 
 ### Concepts Covered
 
@@ -97,6 +99,12 @@ Every completed project should improve both practical engineering skills and the
 - loop()
 - delay()
 - Blink Timing
+- Digital Input
+- digitalRead()
+- INPUT_PULLUP
+- Push Button Interface
+- Software Decision Making
+- Sense → Decide → Act
 
 ---
 
