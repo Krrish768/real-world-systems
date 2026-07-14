@@ -238,3 +238,57 @@ While analysing any circuit, always ask:
 2. Is there a complete path from the power source, through the components, and back to Ground?
 
 ---
+
+---
+
+## Module 03 — Polling, Bouncing & Signal Handling
+
+### 1. Polling
+
+Polling means repeatedly checking the state of something (like an input pin) at regular intervals, instead of waiting for it to notify you.
+
+In Arduino, `digitalRead()` inside `loop()` is polling — the program keeps asking "what is the button's state right now?" over and over, as fast as the loop runs.
+
+**Example:**
+
+If one iteration of `loop()` (including all its code) takes 1 millisecond to execute, then in 3 seconds:
+```
+3 seconds = 3000 milliseconds
+3000 ms / 1 ms per loop = 3000 reads
+```
+
+So the button state gets checked 3000 times in 3 seconds. If the loop takes longer (say 10ms per iteration, due to more code or delays), the same 3 seconds would only give 300 reads — polling frequency directly depends on how fast the loop runs.
+
+**Downside:** Polling wastes CPU time checking things that haven't changed, and if the loop is slow, a very quick input change (like a fast button tap) might get missed between reads.
+
+### 2. Mechanical Switch Bouncing
+
+When a physical button or switch is pressed or released, the metal contacts inside don't touch cleanly in one instant. They physically bounce against each other several times within a few milliseconds before settling into a stable HIGH or LOW state.
+
+**When it occurs:** Every single time a mechanical button is pressed or released — it's a physical property of metal contacts, not a code issue.
+
+**Problem it causes:** During this bounce period, `digitalRead()` (if polling fast enough) sees the pin rapidly flicker between HIGH and LOW multiple times, instead of one clean transition. This can make the Arduino think the button was pressed several times for a single physical press — for example, incrementing a counter by 4 or 5 instead of 1.
+
+**Fix (for later):** Software debouncing — ignoring changes for a short time (e.g. 20-50ms) right after detecting a change, until the signal has settled.
+
+### 3. Polling vs Bouncing
+
+These are two different things, often confused because they show up in the same button example:
+
+- **Polling** is a technique — *how* the Arduino checks an input (by repeatedly reading it).
+- **Bouncing** is a physical problem — *what* actually happens electrically inside a mechanical switch when pressed.
+
+Polling is something you choose to do in code. Bouncing happens regardless of code, purely due to hardware — polling just happens to be the reason bouncing becomes visible as multiple false reads.
+
+### 4. State vs Event vs Interrupt
+
+Three different ways of thinking about how a program reacts to input:
+
+- **State:** The current condition of something at a given moment (e.g. "button is HIGH right now"). Just a snapshot, no notion of change.
+- **Event:** A change from one state to another (e.g. "button just went from HIGH to LOW"). Requires comparing the current reading to the previous one.
+- **Interrupt:** A hardware-level mechanism where the microcontroller pauses whatever it's doing immediately when a specific condition occurs (e.g. pin changes state), and jumps to a special function — without needing to poll at all.
+
+Polling using `digitalRead()` only gives you **state**. To detect an **event** (a press, not just "is pressed"), the code must remember the previous state and compare it each loop. **Interrupts** remove the need for polling entirely — the microcontroller reacts instantly and independently of how fast `loop()` is running.
+
+---
+
