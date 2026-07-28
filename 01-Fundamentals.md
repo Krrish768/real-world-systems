@@ -290,5 +290,65 @@ Three different ways of thinking about how a program reacts to input:
 
 Polling using `digitalRead()` only gives you **state**. To detect an **event** (a press, not just "is pressed"), the code must remember the previous state and compare it each loop. **Interrupts** remove the need for polling entirely — the microcontroller reacts instantly and independently of how fast `loop()` is running.
 
----
+### 5. Why a Single Press Often Registers as Multiple Presses
 
+A press physically causes contact bounce (see Point 2), so the pin doesn't move cleanly from HIGH to LOW once — it flickers through several HIGH/LOW transitions within a few milliseconds before settling. If the code checks for a state change during this unstable window, each flicker looks like a fresh press to the program, even though the user only pressed the button once.
+
+This is why a naive "if state changed, count a press" approach can register 3-5 presses for a single physical tap — the bug isn't in the counting logic, it's in trusting a signal that hasn't settled yet.
+
+### 6. Why Professional Products Always Debounce Their Inputs
+
+Any product with a physical button — a keyboard, a TV remote, an elevator panel — uses the same kind of mechanical switch, so it has the same bounce problem. Without debouncing:
+
+- A single button press could register as multiple actions (e.g. skipping two menu items instead of one).
+- Counters, toggles, and state machines driven by button presses would behave unpredictably.
+
+Debouncing is not an optional polish step — it's a baseline requirement for any product that reads a mechanical switch, because bounce happens on every single press/release, on every switch, every time.
+
+### 7. Hardware vs Software Debouncing (Concept Only)
+
+Two different places to solve the same problem:
+
+**Hardware Debouncing** — extra components (commonly a capacitor forming an RC low-pass filter with a resistor, sometimes a dedicated debounce IC) placed in the circuit itself. These physically smooth out the rapid HIGH/LOW glitches before the signal ever reaches the microcontroller pin, so the pin sees one clean transition.
+
+**Software Debouncing** — no extra hardware. The program detects a change, then ignores further changes for a short window (commonly 20-50ms, using `millis()` or `delay()`) until the signal has had time to settle, before trusting the new state.
+
+**Trade-off:**
+- Hardware debouncing frees the microcontroller from timing logic but costs extra components and wiring per input.
+- Software debouncing needs no extra parts but adds a small delay and a bit of code complexity to every input that needs it.
+
+**Preventive measure used going forward in this repo:** software debouncing, since it needs no extra hardware and is flexible per-button.
+
+### 8. Conditional Statements — if / else if / else
+
+The core building block for software decision-making (Sense → Decide → Act):
+
+```cpp
+if (condition) {
+  // runs only if condition is true
+} else if (anotherCondition) {
+  // runs only if the first condition was false AND this one is true
+} else {
+  // runs only if none of the above conditions were true
+}
+```
+
+- `if` always checks its condition first; if true, its block runs and every `else if`/`else` after it is skipped.
+- `else if` is checked only if everything above it was false — there can be any number of these.
+- `else` has no condition — it's the fallback, and runs only when nothing above it matched.
+- Only ever one block among an if / else if / else chain executes per pass through the code.
+
+### 9. Detecting a State Change (Edge Detection) in Code
+
+Point 4 established the difference between **state** (current condition) and **event** (a change between states). Reading a pin with `digitalRead()` only ever gives state — to turn that into an event, the code has to remember the previous reading and compare it to the current one, every loop:
+
+```cpp
+if (previousButtonState == HIGH && currentButtonState == LOW) {
+  // this only runs on the exact loop where the button just got pressed
+}
+previousButtonState = currentButtonState;
+```
+
+This pattern is called **edge detection** — specifically a **falling edge** here, since it fires only on the HIGH→LOW transition (with `INPUT_PULLUP`, that's the moment of pressing). Without storing `previousButtonState`, the code would only ever know "is the button pressed right now," not "did it just get pressed" — the second one is what makes a toggle (as opposed to a follow-along ON-while-held behavior) possible.
+
+---

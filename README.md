@@ -87,6 +87,7 @@ Every concept learned in this repo feeds directly into building this final syste
 - ✅ RWS-ELE-001 — First Light
 - ✅ RWS-ELE-002 — Blink
 - ✅ RWS-ELE-003 — Push Button Input
+- ✅ RWS-ELE-004 — LED Toggle Using Push Button
 
 ---
 

@@ -17,6 +17,7 @@ A complete map of everything in this repository. Use this to find any file insta
 - [`01-Fundamentals.md`](01-Fundamentals.md) — core physics & electricity theory
   - Module 01 — Electricity (Atom, Charge, Conductors/Insulators, Free Electrons, Battery, Electric Field, Voltage, Current, Resistance, Ohm's Law, Power)
   - Module 02 — Digital Input (Input, Digital Signal, Floating Input, Pull-up/Pull-down, INPUT_PULLUP, Push Button, digitalRead())
+  - Module 03 — Polling, Bouncing & Signal Handling (Polling, Mechanical Switch Bouncing, State vs Event vs Interrupt, Why Multiple Presses Happen, Why Products Need Debouncing, Hardware vs Software Debouncing, if/else if/else, Edge Detection)
 
 ---
 
@@ -41,6 +42,7 @@ Each project folder contains a `README.md` (full write-up), a `code/` folder, an
 | [RWS-ELE-001 — First Light](03-Projects/RWS-ELE-001-First-Light/README.md) | LED ON using Arduino GPIO output | ✅ Completed |
 | [RWS-ELE-002 — Blink](03-Projects/RWS-ELE-002-Blink/README.md) | LED blinking using `setup()`/`loop()`/`delay()` | ✅ Completed |
 | [RWS-ELE-003 — Push Button Input](03-Projects/RWS-ELE-003-Push-Button-Input/README.md) | Digital input with push button controlling LED | ✅ Completed |
+| [RWS-ELE-004 — LED Toggle Using Push Button](03-Projects/RWS-ELE-004-LED-Toggle/README.md) | Toggle LED ON/OFF each press using edge detection | ✅ Completed |
 
 ---
 
