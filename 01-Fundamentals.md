@@ -351,4 +351,74 @@ previousButtonState = currentButtonState;
 
 This pattern is called **edge detection** — specifically a **falling edge** here, since it fires only on the HIGH→LOW transition (with `INPUT_PULLUP`, that's the moment of pressing). Without storing `previousButtonState`, the code would only ever know "is the button pressed right now," not "did it just get pressed" — the second one is what makes a toggle (as opposed to a follow-along ON-while-held behavior) possible.
 
+## Module 04 — Timing, Clock Cycles, and delay()
+
+### 1. Why a Microcontroller Has No Built-In Sense of Time
+
+An Arduino doesn't "know" what a second is the way a wall clock does. It has no calendar, no internal notion of seconds or minutes — all it can actually do is count electrical pulses. Every concept of "time" on a microcontroller is built entirely on top of counting how many pulses have occurred, because pulses are the only thing the hardware natively produces at a fixed, predictable rate.
+
+### 2. What a Clock Signal Is
+
+Every Arduino has a **crystal oscillator** on the board — a small crystal that vibrates at an extremely precise, fixed rate when powered, producing a continuous stream of electrical pulses (HIGH-LOW-HIGH-LOW...). This stream is called the **clock signal**. It doesn't do any computation itself — its only job is to act as a metronome: every single pulse is one "tick," and the CPU synchronizes all its internal operations to these ticks.
+
+'''
+Clock signal (simplified):
+HIGH ─┐ ┌─┐ ┌─┐ ┌─┐ ┌─
+│ │ │ │ │ │ │ │
+LOW └───┘ └───┘ └───┘ └───┘
+↑cycle↑cycle↑cycle↑cycle
+'''
+
+### 3. What 16MHz Actually Means
+
+- **Hz (Hertz)** = number of cycles per second. 1Hz = 1 cycle happens every second.
+- **M (Mega)** = 1,000,000.
+- So **16MHz = 16,000,000 cycles (pulses) every single second.**
+
+This means one full pulse (one HIGH-LOW cycle) takes:
+'''
+1 second / 16,000,000 cycles = 0.0000000625 seconds per cycle
+= 62.5 nanoseconds per cycle
+'''
+The CPU uses these 16 million ticks per second as its fundamental unit of time — everything it does is measured in "how many clock cycles did this take," not in seconds directly.
+
+### 4. How the Arduino Turns Pulse-Counting Into Milliseconds
+
+Since the clock produces a known, fixed number of pulses every second (16,000,000 for a 16MHz board), the microcontroller can work out real time purely by **counting pulses**:
+
+- It knows 16,000,000 cycles = 1 real second.
+- So 16,000 cycles ≈ 1 millisecond (16,000,000 ÷ 1000).
+- A hardware **timer** inside the chip keeps incrementing a counter once per clock cycle. When that counter reaches the number of cycles equal to 1ms, an internal millisecond-counter is bumped up by one.
+
+This is the entire mechanism `millis()` and `delay()` are built on underneath — there is no separate "time module," it's all pulse-counting.
+
+### 5. What `delay(1000)` Actually Does Internally
+
+`delay(1000)` does **not** mean "wait one second" in some magical sense — it means:
+
+> "Keep checking the internal cycle-counter in a loop, doing nothing else, until it has counted enough clock cycles to equal 1000 milliseconds."
+
+```cpp
+// conceptually, this is what delay(1000) is doing internally:
+unsigned long startTime = millis();     // note the current pulse-count-derived time
+while (millis() - startTime < 1000) {
+  // do literally nothing, just keep re-checking
+}
+// only once 1000ms worth of clock cycles have passed, execution continues below
+```
+
+During this entire window, the CPU is **busy-waiting** — actively spinning in this empty loop — not sleeping, not doing anything else, not reading any sensor or pin. It is simply burning cycles until the count target is hit.
+
+### 6. Why `delay()` Is Rarely Used in Real Products
+
+Because `delay()` is **blocking**, the CPU cannot do anything else — including reading buttons, checking sensors, or responding to a critical input — for the entire duration of the delay. Effectively, the microcontroller "ignores the world" for that window.
+
+This is harmless in a simple LED blink project, but becomes dangerous in any system where missing an event even for a few hundred milliseconds matters:
+
+- **Medical devices** (e.g. a patient monitor or ventilator) — if the code is stuck inside a `delay()`, it cannot detect an emergency-stop button press or a sensor threshold being crossed during that window.
+- **Safety-critical systems** (industrial machinery, automotive braking, elevator doors) — an obstacle sensor or emergency input triggered during a `delay()` simply will not be seen until the delay finishes, which could directly cause an accident.
+- **Any responsive system** (robotics, multi-sensor projects) — every `delay()` call is a period where the entire rest of the program is frozen, not just the LED/component being timed.
+
+This is why real-world embedded code almost always replaces `delay()` with **non-blocking timing** (comparing `millis()` against a stored start-time inside the normal loop, without ever pausing execution) — so the CPU stays free to keep sensing and reacting the entire time. *(Non-blocking timing with `millis()` will be covered in a later module.)*
+
 ---
