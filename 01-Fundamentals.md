@@ -421,4 +421,153 @@ This is harmless in a simple LED blink project, but becomes dangerous in any sys
 
 This is why real-world embedded code almost always replaces `delay()` with **non-blocking timing** (comparing `millis()` against a stored start-time inside the normal loop, without ever pausing execution) — so the CPU stays free to keep sensing and reacting the entire time. *(Non-blocking timing with `millis()` will be covered in a later module.)*
 
+## Module 05 — Instructions, Interrupts, Race Conditions & Memory
+
+### 1. What an "Instruction" Actually Is
+
+A single line like `digitalWrite(ledPin, HIGH)` looks like one step, but it is not a single instruction to the CPU — it's a function that expands into many underlying instructions:
+
+- Look up which physical port the given pin number belongs to
+- Read the current value of that port's output register
+- Modify only the bit corresponding to that pin (set it HIGH, leave the rest untouched)
+- Write the modified value back to the port register
+
+Each of these smaller steps is closer to what the CPU actually executes one at a time. The CPU only ever does one instruction at a time, in sequence — "high level" function calls are just convenient names for a bundle of these low-level instructions.
+
+### 2. What an Interrupt Is
+
+An interrupt is a signal that says: **"Interrupt whatever you're doing right now."**
+
+Normally the CPU executes code top to bottom, instruction by instruction, in the order the program lays them out. An interrupt breaks that order — when it arrives, the CPU pauses the currently running instruction sequence, goes and runs a separate small function (the **Interrupt Service Routine**, or ISR), and only then returns to exactly where it left off.
+
+### 3. Why Interrupts Are Required
+
+Without interrupts, the CPU can only ever notice something (like a button press or sensor change) if it happens to be checking that pin at that exact moment in the loop — this is **polling** (Module 03). If the CPU is busy elsewhere (inside a long calculation, a `delay()`, or another task) when the event happens, it simply misses it.
+
+An interrupt removes this dependency on "was the CPU checking right now" — the hardware itself notices the event and forces the CPU to respond, regardless of what it was doing.
+
+### 4. Interrupt ≠ Faster — It Means Higher Priority
+
+An interrupt does not make the CPU execute anything faster. The CPU still runs at the same clock speed either way. What an interrupt changes is **priority** — it forces whatever is happening right now to pause so something more urgent gets handled first. Speed of execution is unchanged; order of execution is what interrupts control.
+
+### 5. The Interrupt Flow
+'''
+Current Instruction
+↓
+Interrupt Arrives
+↓
+Save Current Position
+↓
+Jump to Interrupt Function
+↓
+Execute Interrupt Function
+↓
+Restore Saved Position
+↓
+Continue Normal Program
+'''
+
+Every interrupt follows this exact sequence, no matter what triggered it — a button, a timer, a sensor. The CPU never "forgets" what it was doing; it always returns to precisely where it paused.
+
+### 6. Program Counter — The CPU's Bookmark
+
+The **Program Counter (PC)** is a register inside the CPU that always holds the memory address of the *next* instruction to execute. It's what makes "Save Current Position" and "Restore Saved Position" (Point 5) possible:
+
+- When an interrupt arrives, the CPU saves the current Program Counter value (its bookmark) before jumping into the ISR.
+- Once the ISR finishes, the CPU loads that saved value back into the Program Counter — this is exactly how it knows where to resume, instruction-for-instruction, as if nothing happened.
+
+Without a Program Counter, the CPU would have no way to know where it was, and interrupts would be impossible to return from correctly.
+
+### 7. Race Condition
+
+A **race condition** happens when the normal program and an interrupt both access the same variable, and the timing of *when* the interrupt happens changes the final result — even though the code looks correct on its own.
+
+Take `x = x + 1`. This single line is actually multiple low-level steps:
+'''
+Step 1: Read x from memory into a register
+Step 2: Add 1 to the value in the register
+Step 3: Write the register's value back to x in memory
+'''
+Now suppose the normal program is running `x = x + 1`, and right after **Step 1** (x has been read as, say, 5, but not yet written back), an interrupt fires. The ISR sets `x = 100` directly and finishes. Control returns to Step 2 and Step 3 of the original instruction — but those steps are still working with the *old* value it read in Step 1 (5), not the interrupt's new value (100):
+'''
+Normal program reads x (x = 5) → Step 1
+↓ [interrupt fires here]
+ISR sets x = 100 → x is now 100 in memory
+↓ [interrupt finishes, resumes normal program]
+Normal program adds 1 to its old copy (5 + 1 = 6) → Step 2
+Normal program writes 6 back to x → Step 3
+Final value of x = 6 (the ISR's 100 is silently lost)
+'''
+The bug isn't in the math or the logic — it's that both the main program and the ISR touched the same variable, and the exact moment the interrupt happened determined which value survived. This is why shared variables between an ISR and the main program are a classic source of subtle, hard-to-reproduce bugs.
+
+### 8. `volatile` — "Don't Assume This Variable Stays the Same"
+
+`volatile` tells the compiler: **"Don't assume this variable stays the same. Someone outside the normal program may change it at any time."**
+
+Normally, compilers optimize code by assuming a variable won't change unless the current code changes it — so they may cache its value in a CPU register instead of re-reading it from RAM every time, for speed. This optimization is exactly wrong for a variable an ISR can modify:
+'''
+Main program sets a value, expecting to check it later
+↓
+Compiler optimizes: caches that value in a register for speed
+↓
+ISR changes the actual variable in RAM
+↓
+Main program checks the variable — but reads the stale cached
+register value, not the updated RAM value — and never sees the change
+'''
+Marking the variable `volatile` forces the compiler to always re-read it fresh from RAM on every access, never trust a cached register copy — guaranteeing the main program actually sees changes an ISR makes.
+
+### 9. What Should (and Shouldn't) Go Inside an ISR
+
+An ISR pauses the entire normal program while it runs, so it must be as short as possible. Checklist:
+
+**Does it execute quickly?**
+✅ Good.
+
+**Does it wait for something?**
+❌ Bad.
+
+**Does it allocate memory?**
+❌ Bad.
+
+**Does it print to Serial?**
+❌ Usually bad.
+
+**Does it use `delay()`?**
+❌ Never.
+
+**Does it simply set a flag?**
+✅ Excellent.
+
+The standard pattern: the ISR does the absolute minimum (usually just flipping a `volatile` flag or variable), and the main `loop()` checks that flag and does the real work — keeping the interrupt itself fast, and the heavy logic back in normal, interruptible program flow.
+
+### 10. Flash Memory, RAM, and Registers — What Lives Where
+
+A microcontroller has three different kinds of storage, each with a different job:
+
+| | Flash Memory | RAM | Registers |
+|---|---|---|---|
+| **Stores** | The program code itself (the compiled sketch) | Variables that change while the program runs | The single value a CPU instruction is actively working on |
+| **Volatile?** | Non-volatile (survives power-off) | Volatile (wiped on power-off) | Volatile |
+| **Size** | Large (e.g. 32KB on an UNO) | Small (e.g. 2KB on an UNO) | Extremely small (a handful of bytes total) |
+| **Speed** | Slower | Fast | Fastest |
+| **Read/write endurance** | Limited — designed for occasional writes (flashing new code) | Designed for millions to billions of read/write cycles | Designed for constant read/write, every single clock cycle |
+
+**Why the size difference:** code doesn't change while running, so it can sit in large, non-volatile Flash. Variables change constantly during execution, so they need a fast, freely-rewritable space — that's RAM. Registers are kept extremely small and extremely fast on purpose, because the CPU touches them on literally every instruction.
+
+**The flow when a variable is updated:**
+'''
+Flash Memory (program code, fixed)
+↓ Arduino executes instructions directly from Flash
+CPU needs a variable's value
+↓ fetch from RAM
+Register (loaded with that value to work on it)
+↓ CPU performs the operation (e.g. add 1)
+Register now holds the updated value
+↓ written back
+RAM (variable's stored value is updated)
+'''
+
+Unlike the code itself, an Arduino does **not** copy variables into RAM once and forget them — every time a variable is read or written during `loop()`, this Flash-stays-put, RAM-holds-current-value, register-does-the-work cycle repeats. This is also exactly why `volatile` (Point 8) matters: it forces every one of these RAM fetches to actually happen, instead of letting the compiler skip the fetch and reuse a stale register copy.
+
 ---
