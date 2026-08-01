@@ -43,3 +43,65 @@ The ATmega328P has a **built-in pull-up resistor** (roughly 20–50 kΩ) for eve
 - The board is powered either via USB (5V) or an external supply through VIN (7–12V recommended, regulated internally to 5V).
 - The onboard voltage regulator handles converting external power to the 5V the chip needs.
 - Uploading code happens via USB, using the UART (serial) connection built into the board.
+
+#### ATmega328P — Internal Architecture
+
+The Arduino UNO's microcontroller (ATmega328P) internally looks like this:
+
+```
+                  ATmega328P
+        +----------------------------+
+        |        FLASH               |
+        +----------------------------+
+        |          CPU               |
+        | Registers | ALU | PC | SP  |
+        +----------------------------+
+        |          SRAM              |
+        +----------------------------+
+        |         EEPROM             |
+        +----------------------------+
+        | Timers | GPIO | UART | ADC |
+        +----------------------------+
+```
+
+
+**CPU Functions**
+
+The CPU only ever does a handful of basic operations, and every line of Arduino code eventually breaks down into these:
+
+- Load
+- Store
+- Compare
+- Jump
+- Add
+- Subtract
+- AND
+- OR
+- NOT
+
+**ALU (Arithmetic Logic Unit)**
+
+Does the actual math/logic (Add, Subtract, AND, OR, NOT) — the CPU sends values to the ALU, the ALU computes the result, and the CPU takes that result back to use or store.
+
+**Memory Types Inside the Chip**
+
+| Memory | Stores | Notes |
+|---|---|---|
+| Flash | The program code, `const` variables | Non-volatile, large, code runs directly from here |
+| SRAM | Normal variables that change while running | Volatile, small, fast |
+| EEPROM | Data that must survive power-off but isn't code | Non-volatile, very small, written manually by the programmer |
+
+**Execution Flow**
+'''
+CPU fetches next instruction from Flash
+↓
+CPU loads needed variable from SRAM into a register
+↓
+Register value sent to ALU for calculation
+↓
+ALU returns result to CPU
+↓
+CPU stores result back into SRAM (variable updated)
+'''
+
+`const` values and the code itself stay in Flash and are used directly from there — they never get copied into SRAM, since they don't change. Only variables that change during `loop()` live in SRAM and go through the full fetch → ALU → store cycle above, every time they're touched.
