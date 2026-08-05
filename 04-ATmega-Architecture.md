@@ -65,3 +65,47 @@ Instead of one giant component doing everything, the chip divides the work — a
 - Flash → stores code.
 
 This specialization is exactly why modern CPUs can run so fast — no single part is a bottleneck doing every kind of work.
+
+---
+
+## Module 02 — Registers, Deep Dive
+
+### 1. Registers Are the CPU's Working Memory
+
+The ALU never directly touches RAM. Every calculation follows the same path:
+
+Data fetched from RAM → loaded into a Register → ALU calculates using the Register → Result written back into a Register → then placed back into RAM
+
+Registers sit in the middle of every operation — RAM and ALU never talk to each other directly.
+
+### 2. Why Can't RAM Just Be as Fast as Registers?
+
+**Distance.** Registers are physically located *inside* the CPU. RAM is a separate chip *outside* the CPU. More physical distance means longer wires, more circuitry the signal has to travel through, and more time for each access. This physical placement — not some limitation of the material — is the core reason registers will always be faster than RAM.
+
+### 3. Why Only 32 Registers?
+
+ATmega328P has exactly 32 general-purpose registers, each 8-bit. It's not a hard limit — it's a deliberate trade-off. Adding more registers would mean:
+
+- Larger CPU (more physical space needed)
+- Longer wires (more distance = slower access again, working against the whole point)
+- More power consumption
+- More complexity in the chip design
+- Slower access overall (defeats the purpose of adding them)
+
+32 registers is the sweet spot Atmel chose — enough working space to be fast and useful, without the cost of scaling the CPU up.
+
+### 4. What an 8-bit Register Can Store
+
+Each register is 8 bits wide, meaning it can hold any value from `00000000` to `11111111` in binary — that's **256 possible values** (0-255 unsigned, since 2^8 = 256).
+
+For an **unsigned** integer, all 8 bits are used purely for the value (no sign bit needed, since it's never negative).
+
+### 5. Data Types and How Many Bytes They Need
+
+| Type | Size | Register Space Needed |
+|---|---|---|
+| `uint8_t a = 100;` | 1 byte (8 bits) | 1 register |
+| `uint16_t a = 100;` | 2 bytes (16 bits) | 2 registers |
+| `uint32_t a = 100;` | 4 bytes (32 bits) | 4 registers |
+
+Since each register is only 8 bits, any value that needs more than 8 bits to represent has to be split across multiple registers — a `uint16_t` uses 2 registers together, a `uint32_t` uses 4 registers together, even though logically it's "one variable" in the code.
